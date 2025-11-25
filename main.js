@@ -44,6 +44,39 @@ function archivePagePreparation(){
     // set width and height of page to 100%
     content.style.width='100%';
     content.style.height='100%';
+
+    // Remove existing ad banners
+    removeAds();
+    // Watch and remove any more annoying ad banners that pop up
+    removeNewAds();
+}
+
+// remove ad divs
+function removeAds() {
+    const divs = document.querySelectorAll('div[id]');
+    divs.forEach(div => {
+        if (/^liqwid_board/i.test(div.id)) {
+            div.remove();
+        }
+    });
+}
+
+//observe and remove new ad popups
+function removeNewAds() {
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === 1 && node.tagName === 'DIV' && node.id && /^liqwid_board/i.test(node.id)) {
+                    node.remove();
+                }
+            });
+        });
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 }
 
 
